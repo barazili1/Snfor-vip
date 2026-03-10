@@ -1,0 +1,63 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Ethnocentric';
+  src: url('https://db.onlinewebfonts.com/t/2c8b813b22e11500d43a593e921d7237.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Jzoor';
+  src: url('https://alfont.com/wp-content/fonts/new-arabic-fonts//alfont_com_%D8%AE%D8%B7-%D8%AC%D8%B0%D9%88%D8%B1-%D9%81%D9%84%D8%A7%D8%AA-%D8%B9%D8%B1%D9%8A%D8%B6.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #050505;
+  color: #e4e4e7;
+  font-family: 'Jzoor', 'Cairo', sans-serif;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.font-ar { 
+  font-family: 'Jzoor', 'Cairo', sans-serif !important; 
+}
+
+.font-en { 
+  font-family: 'Ethnocentric', sans-serif !important; 
+}
+
+.glass-panel {
+  background: rgba(12, 12, 14, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(57, 255, 20, 0.1);
+}
+
+.bg-grid-moving {
+  background-image: 
+    linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
