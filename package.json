@@ -10,8 +10,6 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^1.40.0",
-    "@tailwindcss/vite": "^4.0.0",
     "autoprefixer": "^10.4.24",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.344.0",

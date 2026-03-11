@@ -3,34 +3,6 @@ import { Platform } from '../types';
 
 const BASE_URL = "https://evoioi-default-rtdb.europe-west1.firebasedatabase.app";
 
-export const fetchAppleGridData = async (platform: Platform): Promise<boolean[][] | null> => {
-  try {
-    const response = await fetch(`${BASE_URL}/m11.json`);
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (!data) return null;
-    const grid: boolean[][] = Array(10).fill(null).map(() => Array(5).fill(false));
-    for (let i = 1; i <= 50; i++) {
-        const key = `m${i}`;
-        const entry = data[key]; 
-        if (entry !== undefined && entry !== null) {
-            const valStr = (typeof entry === 'object' && entry[key] !== undefined) ? entry[key] : entry; 
-            if (valStr !== undefined) {
-                const isGood = String(valStr) === "0";
-                const idx = i - 1;
-                const row = Math.floor(idx / 5);
-                const col = idx % 5;
-                if (row < 10 && col < 5) grid[row][col] = isGood;
-            }
-        }
-    }
-    return grid;
-  } catch (error) {
-    console.error("Apple Grid Fetch Error:", error);
-    return null;
-  }
-};
-
 export const updateAppleGridData = async (platform: Platform): Promise<boolean> => {
   try {
     const newData: Record<string, any> = {};

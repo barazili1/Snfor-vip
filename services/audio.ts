@@ -8,10 +8,7 @@ const getContext = () => {
     return audioCtx;
 }
 
-export type SoundType = 'click' | 'predict' | 'success' | 'hover' | 'toggle' | 'plane-start' | 'plane-fly' | 'crash';
-
-let planeOscillator: OscillatorNode | null = null;
-let planeGain: GainNode | null = null;
+export type SoundType = 'click' | 'predict' | 'success' | 'hover' | 'toggle';
 
 export const playSound = (type: SoundType) => {
     if (typeof window === 'undefined') return;
@@ -109,64 +106,6 @@ export const playSound = (type: SoundType) => {
                 gainHov.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
                 oscHov.start(now);
                 oscHov.stop(now + 0.02);
-                break;
-
-            case 'plane-start':
-                if (planeOscillator) {
-                    try { planeOscillator.stop(); } catch(e){}
-                }
-                planeOscillator = ctx.createOscillator();
-                planeGain = ctx.createGain();
-                const planeFilter = ctx.createBiquadFilter();
-                
-                planeOscillator.connect(planeFilter);
-                planeFilter.connect(planeGain);
-                planeGain.connect(ctx.destination);
-                
-                planeOscillator.type = 'sawtooth';
-                planeFilter.type = 'lowpass';
-                
-                planeOscillator.frequency.setValueAtTime(100, now);
-                planeOscillator.frequency.linearRampToValueAtTime(800, now + 5); 
-                planeFilter.frequency.setValueAtTime(400, now);
-                planeFilter.frequency.linearRampToValueAtTime(2000, now + 5);
-                
-                planeGain.gain.setValueAtTime(0, now);
-                planeGain.gain.linearRampToValueAtTime(0.05, now + 0.5);
-                
-                planeOscillator.start(now);
-                break;
-
-            case 'crash':
-                if (planeOscillator && planeGain) {
-                    planeOscillator.stop(now);
-                    planeOscillator = null;
-                }
-                
-                // Deep impact sound
-                const bufSize = ctx.sampleRate * 1.0; 
-                const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-                
-                const noise = ctx.createBufferSource();
-                noise.buffer = buffer;
-                
-                const noiseFilter = ctx.createBiquadFilter();
-                noiseFilter.type = 'lowpass';
-                noiseFilter.frequency.setValueAtTime(1000, now);
-                noiseFilter.frequency.exponentialRampToValueAtTime(50, now + 0.5);
-                
-                const noiseGain = ctx.createGain();
-                noiseGain.gain.setValueAtTime(0.15, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
-                
-                noise.connect(noiseFilter);
-                noiseFilter.connect(noiseGain);
-                noiseGain.connect(ctx.destination);
-                noise.start(now);
                 break;
         }
     } catch (e) {

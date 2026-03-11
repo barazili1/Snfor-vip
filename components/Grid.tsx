@@ -11,9 +11,6 @@ interface GridProps {
   path: number[]; 
   isAnalyzing: boolean;
   predictionId?: string;
-  onCellClick?: (rowIndex: number, colIndex: number) => void;
-  rowCount: number;
-  difficulty: string;
   revealRotten?: boolean;
   gridData?: boolean[][]; 
   language: Language;
@@ -21,10 +18,10 @@ interface GridProps {
 
 const COLS = 5;
 
-export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, rowCount, difficulty, revealRotten = false, gridData, language }) => {
+export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, revealRotten = false, gridData, language }) => {
   const [showSuccessFlash, setShowSuccessFlash] = useState(false);
   const t = translations[language];
-  const renderRowIndices = useMemo(() => Array.from({ length: rowCount }, (_, i) => rowCount - 1 - i), [rowCount]);
+  const renderRowIndices = [0]; // Hardcoded to 1 row
   const isFailure = !isAnalyzing && predictionId && (path.length === 0 || path.every(v => v === -1));
   const isSuccess = !isAnalyzing && predictionId && !isFailure;
 
@@ -38,15 +35,14 @@ export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, row
 
   const boardLayout = useMemo(() => {
     if (!predictionId) return null;
-    return Array.from({ length: rowCount }).map((_, rowIndex) => {
+    return Array.from({ length: 1 }).map((_, rowIndex) => {
         const safeColIndex = path[rowIndex] !== undefined ? path[rowIndex] : -1;
         if (safeColIndex === -1 && !gridData) return Array(COLS).fill('unknown');
         if (gridData && gridData[rowIndex]) {
             const realRow = gridData[rowIndex];
             return realRow.map((isSafe, colIndex) => colIndex === safeColIndex ? 'path' : (isSafe ? 'good' : 'bad'));
         }
-        const badAppleCounts = Array.from({ length: 10 }, (_, i) => i + 1 <= 4 ? 1 : (i + 1 <= 7 ? 2 : (i + 1 <= 9 ? 3 : 4)));
-        const numBad = badAppleCounts[rowIndex] || 1;
+        const numBad = 1;
         const indices = Array.from({ length: COLS }, (_, i) => i);
         const potentialBadIndices = indices.filter(i => i !== safeColIndex);
         for (let i = potentialBadIndices.length - 1; i > 0; i--) {
@@ -56,12 +52,7 @@ export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, row
         const badIndices = potentialBadIndices.slice(0, numBad);
         return indices.map(colIndex => colIndex === safeColIndex ? 'path' : (badIndices.includes(colIndex) ? 'bad' : 'good'));
     });
-  }, [predictionId, path, rowCount, gridData]);
-
-  const getExtraVisibleIndex = (rowIndex: number, layoutRow: string[]) => {
-      const goodIndices = layoutRow.map((type, idx) => type === 'good' ? idx : -1).filter(idx => idx !== -1);
-      return goodIndices.length === 0 ? -1 : goodIndices[(rowIndex * 7 + 3) % goodIndices.length];
-  };
+  }, [predictionId, path, gridData]);
 
   return (
     <div className="relative w-full mx-auto select-none overflow-hidden h-full flex flex-col">
@@ -105,10 +96,8 @@ export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, row
           const hasSelection = path[rowIndex] !== undefined && path[rowIndex] !== -1;
           const showResult = (hasSelection || (path.length > 0 && path[0] !== -1)) && !isAnalyzing && boardLayout;
           let layoutRow: string[] = [];
-          let extraVisibleIndex = -1;
           if (showResult && boardLayout && boardLayout[rowIndex]) {
               layoutRow = boardLayout[rowIndex];
-              if (difficulty === 'Medium') extraVisibleIndex = getExtraVisibleIndex(rowIndex, layoutRow);
           }
           return (
             <div key={`row-${rowIndex}`} className="flex items-center justify-center">
@@ -119,7 +108,7 @@ export const Grid: React.FC<GridProps> = ({ path, isAnalyzing, predictionId, row
                   const isBad = cellType === 'bad';
                   const isGood = cellType === 'good';
                   let isVisible = false;
-                  if (showResult && layoutRow.length > 0) isVisible = (difficulty === 'Hard') || (difficulty === 'Medium' ? (isPath || colIndex === extraVisibleIndex) : isPath) || (revealRotten && isBad);
+                  if (showResult && layoutRow.length > 0) isVisible = true || (revealRotten && isBad);
                   return (
                     <div key={`cell-${rowIndex}-${colIndex}`} style={{ willChange: 'transform, opacity' }} className={`aspect-[1.4/1] w-full flex items-center justify-center relative transition-all duration-500 transform-gpu ${isVisible && showResult ? (isPath ? 'scale-105' : 'scale-100') : 'scale-100'}`}>
                       {/* Industrial Cell Frame */}

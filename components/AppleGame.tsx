@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Grid } from './Grid';
-import { generatePrediction } from '../services/gemini';
-import { fetchAppleGridData, updateAppleGridData } from '../services/database';
+import { updateAppleGridData } from '../services/database';
 import { playSound } from '../services/audio';
 import { GameState, PredictionResult, AccessKey, Language, Platform } from '../types';
 import { translations } from '../translations';
@@ -63,9 +62,6 @@ export const AppleGame: React.FC<AppleGameProps> = ({ onBack, accessKeyData, lan
   const isRtl = language === 'ar';
   const [onlineUsersCount, setOnlineUsersCount] = useState(() => Math.floor(Math.random() * (1000 - 50 + 1)) + 50);
 
-  const [rowCount, setRowCount] = useState(1);
-  const [difficulty, setDifficulty] = useState<'Easy' | 'Pro'>('Pro');
-
   const [currentResult, setCurrentResult] = useState<PredictionResult | null>(() => {
     try {
         const saved = localStorage.getItem('fortune-ai-last-result');
@@ -103,10 +99,6 @@ export const AppleGame: React.FC<AppleGameProps> = ({ onBack, accessKeyData, lan
     setPredictionProgress(15);
     await new Promise(r => setTimeout(r, 700));
     setPredictionProgress(45);
-    let realGridData = null;
-    if (accessKeyData?.isAdminMode) {
-        realGridData = await fetchAppleGridData(platform);
-    }
     await new Promise(r => setTimeout(r, 1000));
     setPredictionProgress(80);
     await new Promise(r => setTimeout(r, 800));
@@ -228,7 +220,7 @@ export const AppleGame: React.FC<AppleGameProps> = ({ onBack, accessKeyData, lan
                             </MotionDiv>
                         )}
                     </AnimatePresence>
-                    <Grid path={currentResult?.path || []} isAnalyzing={isAnalyzing} predictionId={currentResult?.id} onCellClick={() => {}} rowCount={1} difficulty={difficulty === 'Pro' ? 'Hard' : 'Easy'} revealRotten={revealRotten} gridData={currentResult?.gridData} language={language} />
+                    <Grid path={currentResult?.path || []} isAnalyzing={isAnalyzing} predictionId={currentResult?.id} revealRotten={revealRotten} gridData={currentResult?.gridData} language={language} />
                 </div>
                 
                 <MotionDiv initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-950 border border-blue-400/20 px-4 py-1.5 rounded-xl z-30 shadow-[0_15px_40px_rgba(0,0,0,0.8)] backdrop-blur-3xl flex-row">
