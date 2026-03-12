@@ -247,11 +247,11 @@ export const Conditions: React.FC<{
                                 <div className="grid grid-cols-2 gap-4" dir="ltr">
                                     <div className="flex flex-col bg-black/60 p-5 rounded-2xl border-2 border-white/5 hover:border-cyan-400/20 transition-colors">
                                         <span className="text-[8px] font-mono text-zinc-600 uppercase mb-2 tracking-widest">USD_VAL</span>
-                                        <span className="text-2xl font-mono font-black text-white">$5.00</span>
+                                        <span className="text-2xl font-mono font-black text-white">$7.00</span>
                                     </div>
                                     <div className="flex flex-col bg-black/60 p-5 rounded-2xl border-2 border-white/5 hover:border-cyan-400/20 transition-colors">
                                         <span className="text-[8px] font-mono text-zinc-600 uppercase mb-2 tracking-widest">EGP_VAL</span>
-                                        <span className="text-2xl font-mono font-black text-white">250</span>
+                                        <span className="text-2xl font-mono font-black text-white">350</span>
                                     </div>
                                 </div>
                             </div>
